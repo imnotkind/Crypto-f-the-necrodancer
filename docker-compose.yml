@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+    necro:
+        build: ./ws
+        ports:
+            - "3080:1111"
+            - "3081:2222"
+        restart: always
+    mongo:
+        image: mongo

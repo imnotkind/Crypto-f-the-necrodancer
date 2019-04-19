@@ -4,8 +4,8 @@ services:
     necro:
         build: ./necro
         ports:
-            - "3080:1111"
-            - "3081:2222"
+            - "3080:3080"
+            - "3081:3081"
         restart: always
     mongo:
         image: mongo

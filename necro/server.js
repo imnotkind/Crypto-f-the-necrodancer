@@ -4,11 +4,21 @@ const url = require("url");
 const nconf = require("nconf");
 const ws = require("ws");
 const mustache = require("mustache");
-
+const MongoClient = require('mongodb').MongoClient;
+var db;
 
 
 
 let start = async() => {
+  MongoClient.connect('mongodb://mongo:27017', function (err, database) {
+    if (err) {
+       console.error('MongoDB 연결 실패', err);
+       return;
+    }
+ 
+    db = database;
+  });
+
   let app = express();
   
   app.get("/", (req, res) => {
@@ -25,8 +35,8 @@ let start = async() => {
 
   })
 
-  var WebSocketS = ws.Server;
-  var wss = new WebSocketServer({ port: 2222 });
+  var WebSocketServer = ws.Server;
+  var wss = new WebSocketServer({ port: 3081 });
 
   // 연결이 수립되면 클라이언트에 메시지를 전송하고 클라이언트로부터의 메시지를 수신한다
   wss.on("connection", function(ws) {
@@ -38,7 +48,7 @@ let start = async() => {
 
 	
 
-	app.listen(1111,"0.0.0.0",() => console.log('listening'));
+	app.listen(3080,"0.0.0.0",() => console.log('listening'));
 };
 
 

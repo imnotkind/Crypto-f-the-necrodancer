@@ -10,5 +10,6 @@ RUN npm install nconf
 RUN npm install -g forever
 RUN npm install mustache
 RUN npm install ws
+RUN npm install mongodb
 
 CMD ["forever", "server.js"]

@@ -5,4 +5,4 @@ server checks time to check it's approx 1 second from last sending, and position
 
 
 
-client-server connection uses some cryptographic scheme
+client-server connection uses some cryptographic scheme (chaining)

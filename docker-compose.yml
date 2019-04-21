@@ -4,8 +4,8 @@ services:
     necro:
         build: ./necro
         ports:
-            - "3080:3080"
-            - "3081:3081"
+            - "4080:4080"
+            - "4081:4081"
         restart: always
         depends_on:
             - mongo

@@ -5,13 +5,13 @@ const url = require("url");
 const nconf = require("nconf");
 const ws = require("ws");
 const mustache = require("mustache");
-//const MongoClient = require('mongodb').MongoClient;
+const moment = require("moment");
+const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo')(session);
 
 const MongoUrl = 'mongodb://mongo:27017/mydb';
 
 
-/* Not going to use db explicitly : we use express-session
 let initdb = async () => {
   db_client = await MongoClient.connect(MongoUrl);
   if(!db_client) throw db_client;
@@ -28,7 +28,8 @@ let initdb = async () => {
   if(!res) throw res;
   console.log("found : ",res)
 }
-*/
+
+
 
 let initws = async () => {
   var WebSocketServer = ws.Server;
@@ -46,7 +47,7 @@ let initws = async () => {
 
 let start = async() => {
   
-  //initdb();
+  initdb();
   initws();
 
   let app = express();
@@ -64,15 +65,8 @@ let start = async() => {
   app.use('/static', express.static('static'));
   
   app.get("/", (req, res) => {
-    
-    if(!req.session.num) {
-      req.session.num = 0;
-    } else {
-      req.session.num += 1;
-    }
 
     let view = {
-      title: "GAME",
       head : "POSITION : "+req.session.num,
     }
 
@@ -80,6 +74,54 @@ let start = async() => {
     let output = mustache.to_html(template, view);
     res.send(output);
 
+  })
+
+  app.post("/start", (req, res) => {
+    req.session.pos = 0
+    req.session.time = moment().valueOf()
+    res.send("start")
+  })
+
+  app.post("/pos", (req, res) => {
+    let prev_pos = req.session.pos
+    let curr_pos = req.query.pos
+    let prev_time = req.session.time
+    let curr_time = moment().valueOf()
+
+    let response = {};
+    response.info = {
+      message: "",
+      prev_pos: prev_pos,
+      curr_pos: curr_pos,
+      prev_time: prev_time,
+      curr_time: curr_time,
+    }
+
+    if(Math.abs(curr_pos - prev_pos) != 1){
+      response.status = "error"
+      response.info.message = "invalid position"
+      res.send(response)
+    }
+    else if(curr_time - prev_time > 1000){
+      response.status = "error"
+      response.info.message = "invalid timing"
+      res.send(response)
+    }
+    else{
+      req.session.pos = curr_pos;
+      req.session.time = curr_time;
+
+      if(curr_pos < 78){
+        response.status = "ok"
+        res.send(response)
+      }
+      else{
+        response.status = "clear"
+        response.info.message = "PLUS{CRYPTO_F**K_THE_NECRODANCER}"
+        res.send(response)
+      }
+      
+    }
   })
 
 

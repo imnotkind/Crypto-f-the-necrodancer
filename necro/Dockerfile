@@ -13,6 +13,7 @@ RUN npm install mustache
 RUN npm install ws
 RUN npm install mongodb
 RUN npm install connect-mongo
+RUN npm install moment
 
 
 CMD ["forever", "server.js"]

@@ -20,9 +20,9 @@ let initdb = async () => {
 
   //db = db.db("mydb"); not needed since we already specified db in MongoUrl
 
-  res = await db.createCollection("game");
-  if(!res) throw res;
-  console.log("Collection created", res);
+  //res = await db.createCollection("game");
+  //if(!res) throw res;
+  //console.log("Collection created", res);
 
   var game = db.Collection("game");
   console.log(game);

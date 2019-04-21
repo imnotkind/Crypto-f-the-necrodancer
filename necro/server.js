@@ -5,12 +5,11 @@ const url = require("url");
 const nconf = require("nconf");
 const ws = require("ws");
 const mustache = require("mustache");
-const MongoClient = require('mongodb').MongoClient;
+//const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo')(session);
 
 const MongoUrl = 'mongodb://mongo:27017/mydb';
-var db_client;
-var res;
+
 
 /* Not going to use db explicitly : we use express-session
 let initdb = async () => {
@@ -67,20 +66,18 @@ let start = async() => {
   app.get("/", (req, res) => {
     
     if(!req.session.num) {
-      req.session.num = 1;
+      req.session.num = 0;
     } else {
       req.session.num += 1;
     }
 
     let view = {
       title: "GAME",
-      head : "NUM : "+req.session.num,
+      head : "POSITION : "+req.session.num,
     }
 
     let template = fs.readFileSync('./static/index.html', 'utf8');
-    console.log(template)
     let output = mustache.to_html(template, view);
-    console.log(output)
     res.send(output);
 
   })

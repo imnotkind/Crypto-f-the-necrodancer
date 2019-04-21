@@ -9,22 +9,21 @@ const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo')(session);
 
 const MongoUrl = 'mongodb://mongo:27017/mydb';
-var db;
+var db_client;
 var res;
 
 
 let initdb = async () => {
-  db = await MongoClient.connect(MongoUrl);
-  if(!db) throw db;
-  console.log("Database created", db);
+  db_client = await MongoClient.connect(MongoUrl);
+  if(!db_client) throw db_client;
+  console.log("Database created", db_client);
 
-  //db = db.db("mydb"); not needed since we already specified db in MongoUrl
 
-  //res = await db.createCollection("game");
+  //res = await db_client.createCollection("game");
   //if(!res) throw res;
   //console.log("Collection created", res);
 
-  var game = db.Collection("game");
+  var game = db_client.db().Collection("game");
   console.log(game);
 
   res = await game.insertOne({username:"haebin", logged_in:false, time: 0})

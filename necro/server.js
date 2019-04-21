@@ -12,7 +12,7 @@ const MongoUrl = 'mongodb://mongo:27017/mydb';
 var db_client;
 var res;
 
-
+/* Not going to use db explicitly : we use express-session
 let initdb = async () => {
   db_client = await MongoClient.connect(MongoUrl);
   if(!db_client) throw db_client;
@@ -29,6 +29,7 @@ let initdb = async () => {
   if(!res) throw res;
   console.log("found : ",res)
 }
+*/
 
 let initws = async () => {
   var WebSocketServer = ws.Server;
@@ -46,13 +47,13 @@ let initws = async () => {
 
 let start = async() => {
   
-  initdb();
+  //initdb();
   initws();
 
   let app = express();
 
   app.use(session({
-    secret: 'secret',
+    secret: 'SUPER_DUPER_SECRET',
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({

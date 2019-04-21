@@ -23,7 +23,7 @@ let initdb = async () => {
   //if(!res) throw res;
   //console.log("Collection created", res);
 
-  var game = db_client.db().Collection("game");
+  var game = db_client.db().collection("game");
   console.log(game);
 
   res = await game.insertOne({username:"haebin", logged_in:false, time: 0})

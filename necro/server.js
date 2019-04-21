@@ -7,18 +7,19 @@ const ws = require("ws");
 const mustache = require("mustache");
 const MongoClient = require('mongodb').MongoClient;
 const MongoStore = require('connect-mongo')(session);
+
+const MongoUrl = 'mongodb://mongo:27017/mydb';
 var db;
 
 
 let initdb = async () => {
-  var mongodb;
-  MongoClient.connect('mongodb://mongo:27017/', function (err, mongo) {
+  MongoClient.connect(MongoUrl, function (err, mongo) {
     if(err) throw err;
  
-    mongodb = mongo;
+    db = mongo;
   });
 
-  db = mongodb.db("mydb");
+  //db = mongodb.db("mydb"); not needed since we already specified db in MongoUrl
   db.createCollection("mycollection",function(err, res){
     if(err) throw err;
     console.log("Collection created");
@@ -61,7 +62,7 @@ let start = async() => {
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({
-      url: "mongodb://mongo:27017/",
+      url: MongoUrl,
       collection: "sessions"
     })
   }));

@@ -16,19 +16,14 @@ var res;
 let initdb = async () => {
   db_client = await MongoClient.connect(MongoUrl);
   if(!db_client) throw db_client;
-  console.log("Database created", db_client);
+  console.log("Database created");
 
-
-  //res = await db_client.createCollection("game");
-  //if(!res) throw res;
-  //console.log("Collection created", res);
-
-  var game = db_client.db().collection("game");
+  var game = db_client.db().collection("game"); //createcollection automatic
   console.log(game);
 
   res = await game.insertOne({username:"haebin", logged_in:false, time: 0})
   if(!res) throw res;
-  console.log("1 document inserted", res);
+  console.log("1 document inserted");
 
 
 }
@@ -64,7 +59,7 @@ let start = async() => {
     })
   }));
 
-  app.use(express.static('static'));
+  app.use('/static', express.static('static'));
   
   app.get("/", (req, res) => {
     

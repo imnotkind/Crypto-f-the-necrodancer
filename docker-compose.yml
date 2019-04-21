@@ -7,5 +7,7 @@ services:
             - "3080:3080"
             - "3081:3081"
         restart: always
+        depends_on:
+            - mongo
     mongo:
         image: mongo

@@ -21,11 +21,13 @@ let initdb = async () => {
   var game = db_client.db().collection("game"); //createcollection automatic
   console.log(game);
 
-  res = await game.insertOne({username:"haebin", logged_in:false, time: 0})
+  res = await game.insertOne({username:"haebin", logged_in:false, time: 999})
   if(!res) throw res;
   console.log("1 document inserted");
 
-
+  res = await game.findOne({'username':"haebin"})
+  if(!res) throw res;
+  console.log("found : ",res)
 }
 
 let initws = async () => {

@@ -20,6 +20,7 @@ let start = async() => {
   });
 
   let app = express();
+  app.use(express.static('static'));
   
   app.get("/", (req, res) => {
     let view = {
@@ -29,7 +30,7 @@ let start = async() => {
       }
     }
 
-    let template = fs.readFileSync('./index.html', 'utf8');
+    let template = fs.readFileSync('./static/index.html', 'utf8');
     let output = mustache.to_html(template, view);
     res.send(output);
 

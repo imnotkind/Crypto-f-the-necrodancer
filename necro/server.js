@@ -77,11 +77,14 @@ let start = async() => {
     }
 
     let view = {
-      title: "GAME" + req.session.num
+      title: "GAME",
+      head : "NUM : "+req.session.num,
     }
 
     let template = fs.readFileSync('./static/index.html', 'utf8');
+    console.log(template)
     let output = mustache.to_html(template, view);
+    console.log(output)
     res.send(output);
 
   })

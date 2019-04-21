@@ -1,41 +1,41 @@
 const express  = require("express");
+const session = require('express-session');
 const fs = require("fs")
 const url = require("url");
 const nconf = require("nconf");
 const ws = require("ws");
 const mustache = require("mustache");
 const MongoClient = require('mongodb').MongoClient;
+const MongoStore = require('connect-mongo')(session);
 var db;
 
 
-
-let start = async() => {
-  MongoClient.connect('mongodb://mongo:27017', function (err, database) {
-    if (err) {
-       console.error('MongoDB 연결 실패', err);
-       return;
-    }
+let initdb = async () => {
+  var mongodb;
+  MongoClient.connect('mongodb://mongo:27017/', function (err, mongo) {
+    if(err) throw err;
  
-    db = database;
+    mongodb = mongo;
   });
 
-  let app = express();
-  app.use(express.static('static'));
-  
-  app.get("/", (req, res) => {
-    let view = {
-      title: "GAME",
-      calc: function () {
-        return 2 + 4;
-      }
-    }
-
-    let template = fs.readFileSync('./static/index.html', 'utf8');
-    let output = mustache.to_html(template, view);
-    res.send(output);
-
+  db = mongodb.db("mydb");
+  db.createCollection("mycollection",function(err, res){
+    if(err) throw err;
+    console.log("Collection created");
   })
 
+
+
+  var game = db.Collection("game");
+  console.log(game);
+
+  game.insertOne({username:"haebin", logged_in:false, time: 0}, function(err, res) {
+    if(err) throw err;
+    console.log("1 document inserted");
+  })
+}
+
+let initws = async () => {
   var WebSocketServer = ws.Server;
   var wss = new WebSocketServer({ port: 3081 });
 
@@ -46,8 +46,46 @@ let start = async() => {
       console.log("Received: %s", message);
     });
   });
+}
 
-	
+
+let start = async() => {
+  
+  initdb();
+  initws();
+
+  let app = express();
+
+  app.use(session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+    store: new MongoStore({
+      url: "mongodb://mongo:27017/",
+      collection: "sessions"
+    })
+  }));
+
+  app.use(express.static('static'));
+  
+  app.get("/", (req, res) => {
+    
+    if(!req.session.num) {
+      req.session.num = 1;
+    } else {
+      req.session.num += 1;
+    }
+
+    let view = {
+      title: "GAME" + req.session.num
+    }
+
+    let template = fs.readFileSync('./static/index.html', 'utf8');
+    let output = mustache.to_html(template, view);
+    res.send(output);
+
+  })
+
 
 	app.listen(3080,"0.0.0.0",() => console.log('listening'));
 };

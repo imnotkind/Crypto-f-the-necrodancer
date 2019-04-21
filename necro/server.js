@@ -10,30 +10,28 @@ const MongoStore = require('connect-mongo')(session);
 
 const MongoUrl = 'mongodb://mongo:27017/mydb';
 var db;
+var res;
 
 
 let initdb = async () => {
-  MongoClient.connect(MongoUrl, function (err, mongo) {
-    if(err) throw err;
- 
-    db = mongo;
-  });
+  db = await MongoClient.connect(MongoUrl);
+  if(!db) throw db;
+  console.log("Database created", db);
 
-  //db = mongodb.db("mydb"); not needed since we already specified db in MongoUrl
-  db.createCollection("mycollection",function(err, res){
-    if(err) throw err;
-    console.log("Collection created");
-  })
+  //db = db.db("mydb"); not needed since we already specified db in MongoUrl
 
-
+  res = await db.createCollection("game");
+  if(!res) throw res;
+  console.log("Collection created", res);
 
   var game = db.Collection("game");
   console.log(game);
 
-  game.insertOne({username:"haebin", logged_in:false, time: 0}, function(err, res) {
-    if(err) throw err;
-    console.log("1 document inserted");
-  })
+  res = await game.insertOne({username:"haebin", logged_in:false, time: 0})
+  if(!res) throw res;
+  console.log("1 document inserted", res);
+
+
 }
 
 let initws = async () => {

@@ -6,3 +6,4 @@ server checks time to check it's approx 1 second from last sending, and position
 need to store position, time in db (NOT express session)
 
 client-server connection uses some cryptographic scheme (keep exchanging key?)
+and websocket!!
